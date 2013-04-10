@@ -5,10 +5,7 @@ class Note
   protected :content, :complete, :creationTime, :updateTime 
   
   def initialize(content, complete, creationTime, updateTime)
-	@content = content
-    @complete = complete
-    @creationTime = creationTime.to_i
-    @updateTime = updateTime.to_i
+	@content, @complete, @creationTime, @updateTime = content, complete, creationTime.to_i, updateTime.to_i
   end
 
   def to_s

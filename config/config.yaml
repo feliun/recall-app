@@ -1,0 +1,7 @@
+#Web config
+web_title: All Notes
+
+#Redis config
+db_host: localhost
+db_port: 6379
+db_password: 
