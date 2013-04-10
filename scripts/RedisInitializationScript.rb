@@ -16,6 +16,14 @@ notes = {
 config = YAML.load_file("../config/config.yaml")
 
 redis = Redis.new(:host => config["db_host"], :port => config["db_port"], :password => config["db_password"])
+redis.select(config["db_subset"])
+
+puts 'Removing previous data...'
+
+keys = redis.keys('*')	
+keys.each do |key|
+	redis.del(key)
+end
 
 puts 'Starting populating...'
 redis.multi do

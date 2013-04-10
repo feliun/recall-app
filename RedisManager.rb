@@ -1,4 +1,4 @@
-#Understands redis and its use
+#Understands redis and its uses
 
 require 'redis'
 require 'yaml'
@@ -11,6 +11,7 @@ class RedisManager
   		@config = YAML.load_file("./config/config.yaml")
 		@redis = Redis.new(:host => @config["db_host"], :port => @config["db_port"], 
 						   :password => @config["db_password"])
+		@redis.select(@config["db_subset"])
   	end
 
 	def save(note)  
