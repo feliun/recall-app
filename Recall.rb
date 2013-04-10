@@ -1,61 +1,22 @@
-require 'redis'
-require 'uri' 
+#Understands Recall web application requests
+
 require 'sinatra' 
+require_relative './Note'
+require_relative './RedisManager'
 
-class RecallManager
-	NOTES_INDEX = 'recall:notes'
+#TODO: how to avoid the creation of a redis manager every time?
 
-	@notes = {
-			  "0" => "Top-up Oyster:true:_:_",
-           	  "1" => "Do the shopping:false:_:_",
-           	  "2" => "Finish Ruby task:true:_:_",
-              "3" => "Clean the house:true:_:_",
-           	  "4" => "Fix my bike:false:_:_",
-           	  "5" => "Football match:true:_:_"
-         	}
-
-    def self.configureRedis
-		redisUrl = 'redis://localhost:6379/'
-		uri = URI.parse(redisUrl)
-		@redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-		populateRedis
-	end  
-
-	def self.populateRedis()  
-		puts 'populating...'
-		@redis.multi do
-      		@notes.each do |key, value|
-				@redis.sadd(NOTES_INDEX, key)
-				@redis.set(key, value);
-			end
-    	end
-		puts 'Notes saved'
-	end
-
-	def save(note)  
-		puts 'inserting...' + note
-		# @redis.multi do
-  #     		@notes.each do |key, value|
-		# 		redis.sadd(NOTES_INDEX, key)
-		# 		redis.set(key, value);
-		# 	end
-  #   	end
-	end
-end
-
-puts 'configuring...'
-RecallManager.configureRedis
+@redisManager = RedisManager.new
 
 get '/' do  
-  @notes = {}
-  @title = 'All Notes' 
-  @recallManager = RecallManager.new
-  erb :home  
+	@notes = {}
+	@title = 'All Notes' 
+	erb :home  
 end  
 
 post '/' do  
-  note = params[:content] + ':' + 'false' + ':' + Time.now.to_s + ':' + Time.now.to_s
-  puts 'about to write...' + "#{note}"
+	note = Note.new(params[:content], false, Time.now, Time.now)
+ 	puts 'about to write...' + note.to_s
   # @recallManager.save(note)
-  redirect '/'  
+	redirect '/'  
 end  
