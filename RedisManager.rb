@@ -24,5 +24,14 @@ class RedisManager
     	end
 	end
 
-	#t = Time.at(i)
+	def getAllNotes
+		notes = []
+		keys = @redis.smembers(@config["db_notes_index"])
+		keys.each do |key|
+			value = @redis.get(key)
+			notes << Note.createNote(key, value)
+		end
+		notes
+	end
+
 end

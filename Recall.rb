@@ -9,14 +9,15 @@ require_relative './RedisManager'
 
 get '/' do  
 	@config = YAML.load_file("./config/config.yaml")
-	@notes = {}
+	@redisManager = RedisManager.new
+	@notes = @redisManager.getAllNotes
 	@title = @config["web_title"] 
 	erb :home  
 end  
 
 post '/' do  
-	@redisManager = RedisManager.new
 	note = Note.new(params[:content], false, Time.now, Time.now)
+	@redisManager = RedisManager.new
   	@redisManager.save(note)
 	redirect '/'  
 end  
