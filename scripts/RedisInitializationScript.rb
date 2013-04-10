@@ -2,7 +2,7 @@ require 'redis'
 require 'uri' 
 require 'yaml'
 
-NOTES_INDEX = 'recall:notes'
+NOTES_INDEX = ''
 
 notes = {
 	"0" => "Top-up Oyster:true:1365605822:1365605822",
@@ -15,16 +15,17 @@ notes = {
 
 config = YAML.load_file("../config/config.yaml")
 
-
 redis = Redis.new(:host => config["db_host"], :port => config["db_port"], :password => config["db_password"])
 
 puts 'Starting populating...'
 redis.multi do
 	notes.each do |key, value|
 		puts "Saving (key, value) = (#{key}, #{value})"
-		redis.sadd(NOTES_INDEX, key)
+		redis.sadd(config["db_notes_index"], key)
 		redis.set(key, value);
 	end
 end
+
+redis.set(config["db_num_notes_key"], notes.size)
 
 puts 'Notes saved'

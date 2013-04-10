@@ -2,6 +2,8 @@
 web_title: All Notes
 
 #Redis config
+db_notes_index: recall:notes
+db_num_notes_key: numberNotes
 db_host: localhost
 db_port: 6379
 db_password: 
