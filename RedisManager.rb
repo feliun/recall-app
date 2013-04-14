@@ -15,7 +15,6 @@ class RedisManager
   	end
 
 	def save(note)  
-		puts 'inserting...' + note.to_s
 		key = @redis.get(@config["db_num_notes_key"])
 		@redis.multi do
 			@redis.sadd(@config["db_notes_index"], key)
@@ -27,10 +26,7 @@ class RedisManager
 	def getAllNotes
 		notes = []
 		keys = @redis.smembers(@config["db_notes_index"])
-		keys.each do |key|
-			value = @redis.get(key)
-			notes << Note.createNote(key, value)
-		end
+		keys.each do |key| notes << Note.createNote(key, @redis.get(key)) end
 		notes
 	end
 

@@ -5,19 +5,18 @@ require 'yaml'
 require_relative './Note'
 require_relative './RedisManager'
 
-#TODO: how to avoid the creation of this instances every time?
+#TODO: change to global and check they are created only once
+
+$config = YAML.load_file("./config/config.yaml") unless $config
+$redisManager = RedisManager.new unless $redisManager
 
 get '/' do  
-	@config = YAML.load_file("./config/config.yaml")
-	@redisManager = RedisManager.new
-	@notes = @redisManager.getAllNotes
-	@title = @config["web_title"] 
+	@notes = $redisManager.getAllNotes
+	@title = $config["web_title"] 
 	erb :home  
 end  
 
-post '/' do  
-	note = Note.new(params[:content], false, Time.now, Time.now)
-	@redisManager = RedisManager.new
-  	@redisManager.save(note)
+post '/' do
+  	$redisManager.save(Note.new(params[:content], false, Time.now, Time.now))
 	redirect '/'  
 end  
