@@ -1,4 +1,4 @@
 recall-app
 ==========
 
-Notes web application implemented in Ruby, Redis, YAML and Sinatra.
+Notes web application implemented in Ruby, Redis, YAML, Sinatra and Bootstrap.
